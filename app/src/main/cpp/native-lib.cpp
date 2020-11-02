@@ -6,7 +6,7 @@ Java_com_telecommande_1robot_MainActivity_stringFromJNI(
         JNIEnv* env,
         jobject /* this */) {
     Principal textC;
-
+    textC.setEnv(env);
     std::string hello = "Hello from C++";
     int cpt = 0;
    // while(1){

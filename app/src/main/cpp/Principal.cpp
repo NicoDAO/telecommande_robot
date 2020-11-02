@@ -20,10 +20,15 @@ std::string Principal::retourne() {
     pthread_t  GereAXI3;
     pthread_create(&GereAXI3, NULL, tournicote1, (void *) tinfo);
 
+
+
     return nom;
 
 }
 
+void Principal::setEnv( JNIEnv* env){
+    this->env = env;
+}
 void* tournicote1(void *pvParameters) {
 
     for (;;) {
