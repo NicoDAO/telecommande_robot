@@ -10,11 +10,9 @@ import com.jcraft.jsch.Channel
 import com.jcraft.jsch.ChannelExec
 import com.jcraft.jsch.JSch
 import java.io.InputStream
+import java.io.OutputStream
 import java.lang.Thread.sleep
 import java.util.*
-import java.io.File
-
-import java.nio.charset.Charset
 
 
 class MainActivity : AppCompatActivity() {
@@ -54,63 +52,78 @@ class MainActivity : AppCompatActivity() {
             var i = 0;
 
             val config = Properties()
-            config["StrictHostKeyChecking"] = "no"
+            config.put("StrictHostKeyChecking", "no")
+            config.put("PreferredAuthentications", "publickey,keyboard-interactive,password");
+
             val jsch = JSch()
-            val session = jsch.getSession("nicolas", "10.0.0.13", 22)
-            session.setPassword("Ivan_2008")
+            val session = jsch.getSession("android", "10.0.0.13", 22)
+            session.setPassword("android")
             session.setConfig(config)
-            session.connect()
+            session.connect(3000)//connection avec un timeout de 3 secondes
             println("Connected")
             val channel: Channel = session.openChannel("exec")
-            sleep(3000)
-            while (true) {
-                i++
-                (channel as ChannelExec).setCommand("ls ")
-                var `in`: InputStream = channel.getInputStream()
-                    // var content = in.readBytes()
-                    while (`in`.available() > 0) {
-                       // (channel as ChannelExec).setCommand("ls ")
-
-                        val lit = `in`.read()
-                         println("on lit" + lit)
-                        sleep(10)
-                    }
-                    if (channel.isClosed()) {
-                        println("exit-status: " + channel.getExitStatus())
-                        break
-                    }
-                    try {
-                        sleep(1000)
-                    } catch (ee: Exception) {
-                    }
-
-                // gauche.setText("gg " + i)
-                println("has run.")
-                //  texte.setText("ee");
-                sleep(1000);
+            var `in`: InputStream = channel.getInputStream()
+            val out: OutputStream = channel.getOutputStream()
+            (channel as ChannelExec).setErrStream(System.err)
+            (channel as ChannelExec).setCommand("ls")
+            channel.connect()
+            while (channel.isConnected()) {
+                println("connect" )
+               // val lit = `in`.read()
+                //println("   :" + lit)
+                Thread.sleep(100);
             }
+             //out.write("ls "+"\n").;
+           // val charset = Charsets.UTF_8
+           // val byteArray = "ls\n".toByteArray(charset)
+           // out.write(byteArray)
+           // out.flush();
+            while (`in`.available() > 0) {
+
+                val lit = `in`.read().toByte()
+                val formatted = String.format("%c", lit) ;
+                println("on lit " + formatted)
+                sleep(10)
+            }
+            if (channel.isClosed()) {
+                println("exit-status: " + channel.getExitStatus())
+            }
+            try {
+                sleep(1000)
+            } catch (ee: Exception) {
+            }
+
+            // gauche.setText("gg " + i)
+            println("has runttourne")
+            //  texte.setText("ee");
+            //  sleep(1000);
+
+            channel.disconnect();
+            session.disconnect();
             // try to touch View of UI thread
             this@MainActivity.runOnUiThread(java.lang.Runnable {
                 // texte.setText("cocc")
             })
         }).start()
         val thread = SimpleThread()
-        thread.start()
+        //  thread.start()
     }
 
     override fun onActivityReenter(resultCode: Int, data: Intent?) {
         super.onActivityReenter(resultCode, data)
     }
+
     companion object {
         // Used to load the 'native-lib' library on application startup.
         init {
             System.loadLibrary("native-lib")
         }
     }
-    class SimpleThread: Thread() {
+
+    class SimpleThread : Thread() {
 
         public override fun run() {
-            while(true) {
+            while (true) {
                 println("${Thread.currentThread()} has run.")
 
                 sleep(1000);
