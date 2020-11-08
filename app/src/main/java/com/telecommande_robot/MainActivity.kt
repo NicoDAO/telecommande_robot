@@ -14,9 +14,11 @@ import com.jcraft.jsch.ChannelExec
 import com.jcraft.jsch.JSch
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.InputStream
 import java.io.OutputStream
 import java.lang.Thread.sleep
+import java.lang.ref.WeakReference
 import java.util.*
 
 
@@ -34,8 +36,18 @@ class MainActivity : AppCompatActivity() {
 
     external fun stringFromJNI(): String
     val connectSSH = LoginRepository()
-    val log_vac_coroutine = LoginViewModel(connectSSH)
+    val log_vac_coroutine = LoginViewModel(connectSSH,this)
 
+    fun majdeIhm(){
+        val texte_cc = findViewById(R.id.connectSSH) as TextView
+
+        println("majdeIhm")
+        if (texte_cc != null){
+
+           texte_cc.setText("Connection OK");
+        }
+
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -47,21 +59,23 @@ class MainActivity : AppCompatActivity() {
         }
         var lance = 0
         val gauche = findViewById(R.id.gauche) as Button
+
         gauche.setOnClickListener {
             Toast.makeText(this@MainActivity, "gauche.", Toast.LENGTH_SHORT).show()
             println("gauche.setOnClickListener")
             // connectSSH.makeLoginRequest()
-            lance = 1;// connectSSH.makeLoginRequest()
+            //lance = 1;// connectSSH.makeLoginRequest()
+            log_vac_coroutine.login("coucou","moi")
 
         }
-
 
         val droite = findViewById(R.id.droite) as Button
         droite.setOnClickListener {
             Toast.makeText(this@MainActivity, "droite.", Toast.LENGTH_SHORT).show()
             println("droite.setOnClickListener")
-            connectSSH.makeLoginRequest()
+           // connectSSH.makeLoginRequest()
             //lance =1;// connectSSH.makeLoginRequest()
+            log_vac_coroutine.login("coucou","moi")
 
         }
         val avance = findViewById(R.id.avance) as Button
@@ -73,31 +87,19 @@ class MainActivity : AppCompatActivity() {
             //lance =1;// connectSSH.makeLoginRequest()
 
         }
+        val recule = findViewById(R.id.recule) as Button
+        recule.setOnClickListener {
+            Toast.makeText(this@MainActivity, "recule.", Toast.LENGTH_SHORT).show()
+            println("recule.setOnClickListener")
+            log_vac_coroutine.login("coucou","moi")
+            // connectSSH.makeLoginRequest()
+            //lance =1;// connectSSH.makeLoginRequest()
+
+        }
 
         // Example of a call to a native method
         findViewById<TextView>(R.id.puissancemoteur).text = stringFromJNI()
-        val texte = findViewById(R.id.connectSSH) as TextView
-
-        Thread(Runnable {
-            while (true) {
-                if (lance == 1) {
-                    lance = 0
-                    connectSSH.makeLoginRequest()
-                }
-                sleep(1000)
-            }
-            // performing some dummy time taking operation
-
-            // try to touch View of UI thread
-            this@MainActivity.runOnUiThread(java.lang.Runnable {
-                // texte.setText("cocc")
-            })
-        }).start()
-        val thread = SimpleThread()
-        //  thread.start()
-
-
-        //  setupWorkManagerJob()
+        val texte_cc = findViewById(R.id.connectSSH) as TextView
 
     }
 
@@ -106,26 +108,50 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
+        fun majIhm() {
+
+        }
+
         // Used to load the 'native-lib' library on application startup.
         init {
             System.loadLibrary("native-lib")
         }
 
-
+        val resultatConnection: String = String()
         /**
          * Setup WorkManager background job to 'fetch' new network data daily.
          */
-    }
+        class LoginViewModel(
+                private val loginRepository: LoginRepository,context: MainActivity
+        ) : ViewModel() {
+            private val activityReference: WeakReference<MainActivity> = WeakReference(context)
+            fun login(username: String, token: String) {
+                // Create a new coroutine to move the execution off the UI thread
+                viewModelScope.launch(Dispatchers.IO) {
+                    val jsonBody = "{ username: \"$username\", token: \"$token\"}"
+                    val result = try {
 
-    class SimpleThread : Thread() {
+                        loginRepository.makeLoginRequest()
+                    }catch(e: Exception) {
+                        Result.Error(Exception("Network request failed"))
+                    }
 
-        public override fun run() {
-            while (true) {
-                println("${Thread.currentThread()} has run.")
+                    val activity = activityReference.get()
+                    if (activity != null) {
 
-                sleep(1000);
+                      //  activity.texte_cc.text = "coucou"
+                        withContext(Dispatchers.Main) {
+
+                            activity.majdeIhm()
+                        }
+                    };
+
+
+                }
+
             }
-        }
+
+            }
     }
 
 
@@ -175,23 +201,9 @@ class MainActivity : AppCompatActivity() {
             session.disconnect();
             return Result.Success("okok")
         }
-
-
     }
 
 
-    class LoginViewModel(
-            private val loginRepository: MainActivity.LoginRepository
-    ) : ViewModel() {
 
-        fun login(username: String, token: String) {
-            // Create a new coroutine to move the execution off the UI thread
-            viewModelScope.launch(Dispatchers.IO) {
-                val jsonBody = "{ username: \"$username\", token: \"$token\"}"
-                loginRepository.makeLoginRequest()
-
-            }
-        }
-    }
 
 }
