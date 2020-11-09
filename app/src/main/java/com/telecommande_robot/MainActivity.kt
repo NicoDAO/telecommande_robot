@@ -19,6 +19,7 @@ sealed class Result<out R> {
     data class Error(val exception: Exception) : Result<Nothing>()
 }
 
+
 class MainActivity : AppCompatActivity() {
     /**
      * A native method that is implemented by the 'native-lib' native library,
@@ -30,7 +31,7 @@ class MainActivity : AppCompatActivity() {
     // val connectSSH = LoginRepository()
     val connectSSH = ConnectionSSH()
     val log_vac_coroutine = LoginViewModel(connectSSH, this)
-
+    var etat_connection = etatConnectionRobot.PasConnecte
     fun afficheConnectionRéussie() {
         val texte_cc = findViewById<TextView>(R.id.connectSSH)
 
@@ -55,7 +56,7 @@ class MainActivity : AppCompatActivity() {
             val connection = findViewById<Button>(R.id.connection)
             connection.setBackgroundColor(Color.MAGENTA)
             connection.setText("deconnecte")
-
+            etat_connection = etatConnectionRobot.Connecté
 
 
         }
@@ -64,7 +65,7 @@ class MainActivity : AppCompatActivity() {
     fun afficheEnvoieRéussie() {
         val texte_cc = findViewById<TextView>(R.id.connectSSH)
 
-        println("envoieréusiie")
+       // println("envoieréusiie")
         if (texte_cc != null) {
 
             texte_cc.text = "Envoie réussie"
@@ -166,9 +167,9 @@ class MainActivity : AppCompatActivity() {
             fun login(username: String, token: String) {
                 // Create a new coroutine to move the execution off the UI thread
                 viewModelScope.launch(Dispatchers.IO) {
-                    val jsonBody = "{ username: \"$username\", token: \"$token\"}"
-                    val result = try {
+                     val result = try {
                         loginRepository.initieConnection()
+
                     } catch (e: Exception) {
                         Result.Error(Exception("Network request failed"))
                     }
@@ -176,6 +177,7 @@ class MainActivity : AppCompatActivity() {
                     if (activity != null) {
                         //  activity.texte_cc.text = "coucou"
                         withContext(Dispatchers.Main) {
+                           // if(result.)
                             activity.afficheConnectionRéussie()
                         }
                     }
@@ -193,8 +195,12 @@ class MainActivity : AppCompatActivity() {
                     if (activity != null) {
                         //  activity.texte_cc.text = "coucou"
                         withContext(Dispatchers.Main) {
-                            activity.afficheEnvoieRéussie()
-                        }
+                            println(result);
+                       //    if(result.() == com.telecommande_robot.Result) {
+                               activity.afficheEnvoieRéussie()
+                        //   }
+                           }
+
                     }
                 }
             }

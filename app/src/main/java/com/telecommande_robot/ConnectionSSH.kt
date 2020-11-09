@@ -13,11 +13,17 @@ enum class etatConnectionRobot {
 }
 
 class ConnectionSSH {
-    private var etat_connection = etatConnectionRobot.PasConnecte
+    private var etat_connection = com.telecommande_robot.etatConnectionRobot.PasConnecte
     var jsch = JSch()
     lateinit var channel: Channel///= session.openChannel("exec")
     lateinit var session: Session
+    var etatConnectionRobot = com.telecommande_robot.etatConnectionRobot.PasConnecte
     fun initieConnection(): Result.Success<String> {
+       if( etatConnectionRobot == com.telecommande_robot.etatConnectionRobot.Connecté){
+           deconnecte()
+           return  Result.Success("deconnecte")
+       }
+
         var i = 0
         val config = Properties()
         config.put("StrictHostKeyChecking", "no")
@@ -35,7 +41,7 @@ class ConnectionSSH {
         channel.connect()
         while (channel.isConnected) {
             println("connecté")
-            etat_connection = etatConnectionRobot.Connecté
+            etatConnectionRobot = com.telecommande_robot.etatConnectionRobot.Connecté
             Thread.sleep(100)
         }
         var formatted = ""
@@ -57,7 +63,7 @@ class ConnectionSSH {
         println("has runttourne")
         channel.disconnect()
         //  session.disconnect()
-        return Result.Success("okok")
+        return Result.Success("connecte")
     }
 
     fun envoie(commande: String): Result.Success<String> {
@@ -75,7 +81,7 @@ class ConnectionSSH {
         channel.connect()
         while (channel.isConnected) {
             println("connect")
-            etat_connection = etatConnectionRobot.Connecté
+            etatConnectionRobot == com.telecommande_robot.etatConnectionRobot.Connecté
             //  Thread.sleep(100)
         }
         var formatted = ""
