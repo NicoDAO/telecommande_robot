@@ -1,5 +1,6 @@
 package com.telecommande_robot
 
+import android.graphics.Color
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
@@ -37,6 +38,26 @@ class MainActivity : AppCompatActivity() {
         if (texte_cc != null) {
 
             texte_cc.text = "Connection réussie"
+            val gauche = findViewById<Button>(R.id.gauche)
+            gauche.setBackgroundColor(Color.MAGENTA)
+            val droite = findViewById<Button>(R.id.droite)
+            droite.setBackgroundColor(Color.MAGENTA)
+
+            val avance = findViewById<Button>(R.id.avance)
+            avance.setBackgroundColor(Color.MAGENTA)
+
+            val recule = findViewById<Button>(R.id.recule)
+            recule.setBackgroundColor(Color.MAGENTA)
+
+            val activation = findViewById<Button>(R.id.active)
+           // activation.setText("deconnecte")
+
+            val connection = findViewById<Button>(R.id.connection)
+            connection.setBackgroundColor(Color.MAGENTA)
+            connection.setText("deconnecte")
+
+
+
         }
     }
 
@@ -47,6 +68,17 @@ class MainActivity : AppCompatActivity() {
         if (texte_cc != null) {
 
             texte_cc.text = "Envoie réussie"
+            val gauche = findViewById<Button>(R.id.gauche)
+            gauche.setBackgroundColor(Color.BLUE)
+            val droite = findViewById<Button>(R.id.droite)
+            droite.setBackgroundColor(Color.BLUE)
+
+            val avance = findViewById<Button>(R.id.avance)
+            avance.setBackgroundColor(Color.BLUE)
+
+            val recule = findViewById<Button>(R.id.recule)
+            recule.setBackgroundColor(Color.BLUE)
+
         }
     }
 
@@ -61,37 +93,50 @@ class MainActivity : AppCompatActivity() {
         }
 
         val gauche = findViewById<Button>(R.id.gauche)
+        gauche.setBackgroundColor(Color.GRAY)
         gauche.setOnClickListener {
             Toast.makeText(this@MainActivity, "gauche.", Toast.LENGTH_SHORT).show()
             println("gauche.setOnClickListener")
-            log_vac_coroutine.login("sh gauche.sh 10", "moi")
+            log_vac_coroutine.envoie("sh gauche.sh 10", "moi")
+            gauche.setBackgroundColor(Color.GRAY)
+
 
         }
 
         val droite = findViewById<Button>(R.id.droite)
+        droite.setBackgroundColor(Color.GRAY)
         droite.setOnClickListener {
             Toast.makeText(this@MainActivity, "droite.", Toast.LENGTH_SHORT).show()
             println("droite.setOnClickListener")
-            log_vac_coroutine.login("sh droite.sh 10", "moi")
+            log_vac_coroutine.envoie("sh droite.sh 10", "moi")
+            droite.setBackgroundColor(Color.GRAY)
 
         }
         val avance = findViewById<Button>(R.id.avance)
+        avance.setBackgroundColor(Color.GRAY)
         avance.setOnClickListener {
             Toast.makeText(this@MainActivity, "avance.", Toast.LENGTH_SHORT).show()
             println("avance.setOnClickListener")
             log_vac_coroutine.envoie("sh avance.sh 10", "moi")
+            avance.setBackgroundColor(Color.GRAY)
+
         }
         val recule = findViewById<Button>(R.id.recule)
+        recule.setBackgroundColor(Color.GRAY)
         recule.setOnClickListener {
             Toast.makeText(this@MainActivity, "recule.", Toast.LENGTH_SHORT).show()
             println("recule.setOnClickListener")
             log_vac_coroutine.envoie("sh recule.sh 10", "moi")
-         }
+            recule.setBackgroundColor(Color.GRAY)
+
+        }
         val connection = findViewById<Button>(R.id.connection)
         connection.setOnClickListener {
             Toast.makeText(this@MainActivity, "connection.", Toast.LENGTH_SHORT).show()
             println("connection.setOnClickListener")
             log_vac_coroutine.login("coucou", "moi")
+            connection.setBackgroundColor(Color.GRAY)
+
         }
 
         // Example of a call to a native method
