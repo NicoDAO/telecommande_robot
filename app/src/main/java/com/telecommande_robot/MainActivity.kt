@@ -142,7 +142,6 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-
         val configure = findViewById<Button>(R.id.configure)
         configure.setOnClickListener {
             Toast.makeText(this@MainActivity, "configure.", Toast.LENGTH_SHORT).show()
@@ -150,9 +149,20 @@ class MainActivity : AppCompatActivity() {
             log_vac_coroutine.login("configuration", "moi")
             connection.setBackgroundColor(Color.GRAY)
             val intent = Intent(this, Boite_configuration::class.java)
-            startActivity(intent)
+
+           // startActivity(intent)
+            startActivityForResult(intent)
 
         }
+        void onActivityResult() {
+            if (requestCode == request_Code) {
+                if (resultCode == RESULT_OK) {
+                    String street = data.getStringExtra("streetkey");
+                    String city = data.getStringExtra("citykey");
+                    String home = data.getStringExtra("homekey");
+                }
+            }
+
 
         // Example of a call to a native method
         findViewById<TextView>(R.id.puissancemoteur).text = stringFromJNI()
