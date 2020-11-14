@@ -28,8 +28,8 @@ class ConnectionSSH {
         val config = Properties()
         config.put("StrictHostKeyChecking", "no")
         config.put("PreferredAuthentications", "publickey,keyboard-interactive,password")
-        session = jsch.getSession("android", "10.0.0.13", 22)
-        session.setPassword("android")
+        session = jsch.getSession("nicolas", "10.0.0.12", 22)
+        session.setPassword("nicolas")
         session.setConfig(config)
         session.connect(3000)//connection avec un timeout de 3 secondes
         println("Connected")

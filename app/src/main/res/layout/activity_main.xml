@@ -32,11 +32,11 @@
                 android:text="connection" />
 
             <Button
-                android:id="@+id/active"
+                android:id="@+id/configure"
                 android:layout_width="210dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
-                android:text="active" />
+                android:text="configure" />
 
             <View
                 android:id="@+id/divider"

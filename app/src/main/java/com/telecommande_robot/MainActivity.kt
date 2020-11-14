@@ -1,5 +1,6 @@
 package com.telecommande_robot
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.widget.Button
@@ -8,6 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -50,7 +52,7 @@ class MainActivity : AppCompatActivity() {
             val recule = findViewById<Button>(R.id.recule)
             recule.setBackgroundColor(Color.MAGENTA)
 
-            val activation = findViewById<Button>(R.id.active)
+            val activation = findViewById<Button>(R.id.configure)
            // activation.setText("deconnecte")
 
             val connection = findViewById<Button>(R.id.connection)
@@ -88,9 +90,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         // get reference to button
-        val activation = findViewById<Button>(R.id.active)
+        val activation = findViewById<Button>(R.id.configure)
         activation.setOnClickListener {
-            Toast.makeText(this@MainActivity, "activation.", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this@MainActivity, "configure.", Toast.LENGTH_SHORT).show()
         }
 
         val gauche = findViewById<Button>(R.id.gauche)
@@ -118,7 +120,7 @@ class MainActivity : AppCompatActivity() {
         avance.setOnClickListener {
             Toast.makeText(this@MainActivity, "avance.", Toast.LENGTH_SHORT).show()
             println("avance.setOnClickListener")
-            log_vac_coroutine.envoie("sh avance.sh 10", "moi")
+            log_vac_coroutine.envoie("sh avance.sh 163840", "moi")
             avance.setBackgroundColor(Color.GRAY)
 
         }
@@ -127,7 +129,7 @@ class MainActivity : AppCompatActivity() {
         recule.setOnClickListener {
             Toast.makeText(this@MainActivity, "recule.", Toast.LENGTH_SHORT).show()
             println("recule.setOnClickListener")
-            log_vac_coroutine.envoie("sh recule.sh 10", "moi")
+            log_vac_coroutine.envoie("sh recule.sh 163840  ", "moi")
             recule.setBackgroundColor(Color.GRAY)
 
         }
@@ -137,6 +139,18 @@ class MainActivity : AppCompatActivity() {
             println("connection.setOnClickListener")
             log_vac_coroutine.login("coucou", "moi")
             connection.setBackgroundColor(Color.GRAY)
+
+        }
+
+
+        val configure = findViewById<Button>(R.id.configure)
+        configure.setOnClickListener {
+            Toast.makeText(this@MainActivity, "configure.", Toast.LENGTH_SHORT).show()
+            println("configure.setOnClickListener")
+            log_vac_coroutine.login("configuration", "moi")
+            connection.setBackgroundColor(Color.GRAY)
+            val intent = Intent(this, Boite_configuration::class.java)
+            startActivity(intent)
 
         }
 
