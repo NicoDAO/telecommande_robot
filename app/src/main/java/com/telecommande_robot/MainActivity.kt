@@ -169,9 +169,16 @@ class MainActivity : AppCompatActivity() {
        if (resultCode != RESULT_OK) return
 
 
-        val returnString = data?.getStringExtra("result")//on r&cupère ici la valeur de l'acivité fille
+        var returnString = data?.getStringExtra("adresseIP")//on r&cupère ici la valeur de l'acivité fille
+        println("on récupère l'adresse IP = " + returnString)
 
-        println("on récupère " + returnString)
+        returnString = data?.getStringExtra("nomUti")//on r&cupère ici la valeur de l'acivité fille
+        println("on récupère le nom utilisateur = " + returnString)
+
+        returnString = data?.getStringExtra("motDePasse")//on r&cupère ici la valeur de l'acivité fille
+        println("on récupère motDePasse = " + returnString)
+
+
 
 
     }
