@@ -54,7 +54,7 @@ class ConnectionSSH {
 
             val lit = `in`.read().toByte()
             formatted += String.format("%c", lit)
-            println("on lit " + formatted)
+            println("on lit : " + formatted)
             Thread.sleep(10)
         }
         if (channel.isClosed) {
@@ -97,7 +97,7 @@ class ConnectionSSH {
             //Thread.sleep(10)
         }
         println("on recoit : " + formatted)
-        return Result.Success("okok")
+        return Result.Success(formatted)
 
     }
 

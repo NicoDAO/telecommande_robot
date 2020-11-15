@@ -36,8 +36,8 @@
 
             <EditText
                 android:id="@+id/connectSSH"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="151dp"
                 android:ems="10"
                 android:inputType="textPersonName"
                 android:text="connection" />
@@ -137,7 +137,7 @@
 
                     <Button
                         android:id="@+id/avance"
-                        android:layout_width="231dp"
+                        android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:text="avance" />
 
@@ -155,30 +155,33 @@
 
                     <Button
                         android:id="@+id/gauche"
-                        android:layout_width="146dp"
+                        android:layout_width="137dp"
                         android:layout_height="match_parent"
+                        android:layout_margin="1mm"
                         android:text="gauche" />
 
                     <Space
-                        android:layout_width="146dp"
+                        android:layout_width="10dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
 
                     <Button
                         android:id="@+id/arrete"
-                        android:layout_width="146dp"
+                        android:layout_width="100dp"
                         android:layout_height="match_parent"
+                        android:layout_margin="1mm"
                         android:text="stop" />
 
                     <Space
-                        android:layout_width="146dp"
+                        android:layout_width="10dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
 
                     <Button
                         android:id="@+id/droite"
-                        android:layout_width="146dp"
+                        android:layout_width="157dp"
                         android:layout_height="wrap_content"
+                        android:layout_margin="1mm"
                         android:text="droite" />
 
 
@@ -206,9 +209,11 @@
 
                         <Button
                             android:id="@+id/recule"
-                            android:layout_width="228dp"
+                            android:layout_width="150dp"
                             android:layout_height="wrap_content"
-                            android:text="recule" />
+                            android:text="recule"
+                            android:layout_margin="1mm"/>
+                        />
 
                         <Space
                             android:layout_width="146dp"
@@ -227,25 +232,7 @@
                     android:gravity="start|top"
                     android:inputType="textMultiLine" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"></LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"></LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"></LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"></LinearLayout>
 
             </LinearLayout>
 

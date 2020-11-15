@@ -15,6 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.lang.ref.WeakReference
+import java.util.Arrays.toString
 
 
 sealed class Result<out R> {
@@ -59,13 +60,13 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun afficheEnvoieRéussie() {
-        val texte_cc = findViewById<TextView>(R.id.connectSSH)
+    fun afficheEnvoieRéussie(result: Result<String>) {
+        val texte_cc = findViewById<TextView>(R.id.editTextTextMultiLine)
 
         // println("envoieréusiie")
         if (texte_cc != null) {
-
-            texte_cc.text = "Envoie réussie"
+            var reception= result.toString()
+            texte_cc.text = reception
             val gauche = findViewById<Button>(R.id.gauche)
             gauche.setBackgroundColor(Color.BLUE)
             val droite = findViewById<Button>(R.id.droite)
@@ -316,8 +317,8 @@ class MainActivity : AppCompatActivity() {
                     val activity = activityReference.get()
                     if (activity != null) {
                         withContext(Dispatchers.Main) {
-                            println(result)
-                            activity.afficheEnvoieRéussie()
+                            println( "on recoit " + result)
+                            activity.afficheEnvoieRéussie(result)
                         }
 
                     }
