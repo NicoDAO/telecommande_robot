@@ -1,5 +1,7 @@
 package com.telecommande_robot
 
+import android.R.attr
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -9,7 +11,6 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -53,11 +54,11 @@ class MainActivity : AppCompatActivity() {
             recule.setBackgroundColor(Color.MAGENTA)
 
             val activation = findViewById<Button>(R.id.configure)
-           // activation.setText("deconnecte")
+            // activation.setText("deconnecte")
 
             val connection = findViewById<Button>(R.id.connection)
             connection.setBackgroundColor(Color.MAGENTA)
-            connection.setText("deconnecte")
+            connection.text = "deconnecte"
             etat_connection = etatConnectionRobot.Connecté
 
 
@@ -67,7 +68,7 @@ class MainActivity : AppCompatActivity() {
     fun afficheEnvoieRéussie() {
         val texte_cc = findViewById<TextView>(R.id.connectSSH)
 
-       // println("envoieréusiie")
+        // println("envoieréusiie")
         if (texte_cc != null) {
 
             texte_cc.text = "Envoie réussie"
@@ -142,6 +143,9 @@ class MainActivity : AppCompatActivity() {
 
         }
 
+        val PICK_CONTACT_REQUEST = 0
+        val config = ConfigurationRobot()
+
         val configure = findViewById<Button>(R.id.configure)
         configure.setOnClickListener {
             Toast.makeText(this@MainActivity, "configure.", Toast.LENGTH_SHORT).show()
@@ -150,28 +154,35 @@ class MainActivity : AppCompatActivity() {
             connection.setBackgroundColor(Color.GRAY)
             val intent = Intent(this, Boite_configuration::class.java)
 
-           // startActivity(intent)
-            startActivityForResult(intent)
+            //startActivity(intent)
+            startActivityForResult(intent, 2)
 
         }
-        void onActivityResult() {
-            if (requestCode == request_Code) {
-                if (resultCode == RESULT_OK) {
-                    String street = data.getStringExtra("streetkey");
-                    String city = data.getStringExtra("citykey");
-                    String home = data.getStringExtra("homekey");
-                }
-            }
-
 
         // Example of a call to a native method
         findViewById<TextView>(R.id.puissancemoteur).text = stringFromJNI()
         val texte_cc = findViewById<TextView>(R.id.connectSSH)
     }
 
-    companion object {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+       if (resultCode != RESULT_OK) return
+
+
+        val returnString = data?.getStringExtra("result")//on r&cupère ici la valeur de l'acivité fille
+
+        println("on récupère " + returnString)
+
+
+    }
+        companion object {
         fun majIhm() {
 
+        }
+
+        fun getLaunchIntent(context: Context): Intent {
+            val intent = Intent(context, MainActivity::class.java)
+            return intent
         }
 
         // Used to load the 'native-lib' library on application startup.
@@ -185,13 +196,13 @@ class MainActivity : AppCompatActivity() {
          * Setup WorkManager background job to 'fetch' new network data daily.
          */
         class LoginViewModel(
-                private val loginRepository: ConnectionSSH, context: MainActivity
+            private val loginRepository: ConnectionSSH, context: MainActivity
         ) : ViewModel() {
             private val activityReference: WeakReference<MainActivity> = WeakReference(context)
             fun login(username: String, token: String) {
                 // Create a new coroutine to move the execution off the UI thread
                 viewModelScope.launch(Dispatchers.IO) {
-                     val result = try {
+                    val result = try {
                         loginRepository.initieConnection()
 
                     } catch (e: Exception) {
@@ -201,16 +212,17 @@ class MainActivity : AppCompatActivity() {
                     if (activity != null) {
                         //  activity.texte_cc.text = "coucou"
                         withContext(Dispatchers.Main) {
-                           // if(result.)
+                            // if(result.)
                             activity.afficheConnectionRéussie()
                         }
                     }
                 }
             }
+
             fun envoie(commande: String, token: String) {
                 // Create a new coroutine to move the execution off the UI thread
                 viewModelScope.launch(Dispatchers.IO) {
-                     val result = try {
+                    val result = try {
                         loginRepository.envoie(commande)
                     } catch (e: Exception) {
                         Result.Error(Exception("Network request failed"))
@@ -219,16 +231,18 @@ class MainActivity : AppCompatActivity() {
                     if (activity != null) {
                         //  activity.texte_cc.text = "coucou"
                         withContext(Dispatchers.Main) {
-                            println(result);
-                       //    if(result.() == com.telecommande_robot.Result) {
-                               activity.afficheEnvoieRéussie()
-                        //   }
-                           }
+                            println(result)
+                            //    if(result.() == com.telecommande_robot.Result) {
+                            activity.afficheEnvoieRéussie()
+                            //   }
+                        }
 
                     }
                 }
             }
 
         }
+
+
     }
 }
