@@ -1,10 +1,10 @@
 package com.telecommande_robot
 
-import android.R.attr
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
@@ -24,15 +24,11 @@ sealed class Result<out R> {
 
 
 class MainActivity : AppCompatActivity() {
-    /**
-     * A native method that is implemented by the 'native-lib' native library,
-     * which is packaged with this application.
-     */
 
     external fun stringFromJNI(): String
 
-    // val connectSSH = LoginRepository()
     val connectSSH = ConnectionSSH()
+
     val log_vac_coroutine = LoginViewModel(connectSSH, this)
     var etat_connection = etatConnectionRobot.PasConnecte
     fun afficheConnectionRéussie() {
@@ -41,7 +37,7 @@ class MainActivity : AppCompatActivity() {
         println("majdeIhm")
         if (texte_cc != null) {
 
-            texte_cc.text = "Connection réussie"
+            texte_cc.text = ""
             val gauche = findViewById<Button>(R.id.gauche)
             gauche.setBackgroundColor(Color.MAGENTA)
             val droite = findViewById<Button>(R.id.droite)
@@ -53,13 +49,11 @@ class MainActivity : AppCompatActivity() {
             val recule = findViewById<Button>(R.id.recule)
             recule.setBackgroundColor(Color.MAGENTA)
 
-            val activation = findViewById<Button>(R.id.configure)
-            // activation.setText("deconnecte")
-
             val connection = findViewById<Button>(R.id.connection)
             connection.setBackgroundColor(Color.MAGENTA)
-            connection.text = "deconnecte"
             etat_connection = etatConnectionRobot.Connecté
+
+            val decconnection = findViewById<Button>(R.id.deconnection)
 
 
         }
@@ -98,39 +92,51 @@ class MainActivity : AppCompatActivity() {
 
         val gauche = findViewById<Button>(R.id.gauche)
         gauche.setBackgroundColor(Color.GRAY)
-        gauche.setOnClickListener {
+        gauche.setOnClickListener {//quand on appuie sur le bouton gauche, on arrive ici
             Toast.makeText(this@MainActivity, "gauche.", Toast.LENGTH_SHORT).show()
             println("gauche.setOnClickListener")
-            log_vac_coroutine.envoie("sh gauche.sh 10", "moi")
-            gauche.setBackgroundColor(Color.GRAY)
+            log_vac_coroutine.envoie(
+                "sh gauche.sh",
+                "moi"
+            )//on est sur la session ssh robot, on lance le script
 
 
         }
 
         val droite = findViewById<Button>(R.id.droite)
         droite.setBackgroundColor(Color.GRAY)
-        droite.setOnClickListener {
+        droite.visibility = View.INVISIBLE
+        droite.setOnClickListener {//quand on appuie sur le bouton droite, on arrive ici
             Toast.makeText(this@MainActivity, "droite.", Toast.LENGTH_SHORT).show()
             println("droite.setOnClickListener")
-            log_vac_coroutine.envoie("sh droite.sh 10", "moi")
+            log_vac_coroutine.envoie(
+                "sh droite.sh",
+                "moi"
+            )//on est sur la session ssh robot, on lance le script
             droite.setBackgroundColor(Color.GRAY)
 
         }
         val avance = findViewById<Button>(R.id.avance)
         avance.setBackgroundColor(Color.GRAY)
-        avance.setOnClickListener {
+        avance.setOnClickListener {//quand on appuie sur le bouton avance, on arrive ici
             Toast.makeText(this@MainActivity, "avance.", Toast.LENGTH_SHORT).show()
             println("avance.setOnClickListener")
-            log_vac_coroutine.envoie("sh avance.sh 163840", "moi")
+            log_vac_coroutine.envoie(
+                "sh avance.sh",
+                "moi"
+            )//on est sur la session ssh robot, on lance le script
             avance.setBackgroundColor(Color.GRAY)
 
         }
         val recule = findViewById<Button>(R.id.recule)
         recule.setBackgroundColor(Color.GRAY)
-        recule.setOnClickListener {
+        recule.setOnClickListener {//quand on appuie sur le bouton recule, on arrive ici
             Toast.makeText(this@MainActivity, "recule.", Toast.LENGTH_SHORT).show()
             println("recule.setOnClickListener")
-            log_vac_coroutine.envoie("sh recule.sh 163840  ", "moi")
+            log_vac_coroutine.envoie(
+                "sh recule.sh ",
+                "moi"
+            )//on est sur la session ssh robot, on lance le script
             recule.setBackgroundColor(Color.GRAY)
 
         }
@@ -140,6 +146,15 @@ class MainActivity : AppCompatActivity() {
             println("connection.setOnClickListener")
             log_vac_coroutine.login("coucou", "moi")
             connection.setBackgroundColor(Color.GRAY)
+
+        }
+
+        val deconnection = findViewById<Button>(R.id.deconnection)
+        deconnection.setOnClickListener {
+            Toast.makeText(this@MainActivity, "deconnection.", Toast.LENGTH_SHORT).show()
+            println("deconnection.setOnClickListener")
+            log_vac_coroutine.deconnecte()
+            deconnection.setBackgroundColor(Color.GRAY)
 
         }
 
@@ -154,35 +169,87 @@ class MainActivity : AppCompatActivity() {
             connection.setBackgroundColor(Color.GRAY)
             val intent = Intent(this, Boite_configuration::class.java)
 
-            //startActivity(intent)
-            startActivityForResult(intent, 2)
+            startActivityForResult(
+                intent,
+                2
+            )//on lance la page de configuration de connection avec le robot.
 
         }
 
         // Example of a call to a native method
         findViewById<TextView>(R.id.puissancemoteur).text = stringFromJNI()
         val texte_cc = findViewById<TextView>(R.id.connectSSH)
+        cacheLesBoutons()//on cache les boutons du robot tant qu'on a pas établit la connection
+    }
+
+    fun afficheTousLesBoutons() {
+        val droite = findViewById<Button>(R.id.droite)
+        droite.visibility = View.VISIBLE
+        val gauche = findViewById<Button>(R.id.gauche)
+        gauche.visibility = View.VISIBLE
+        val recu = findViewById<Button>(R.id.recule)
+        recu.visibility = View.VISIBLE
+        val avanc = findViewById<Button>(R.id.avance)
+        avanc.visibility = View.VISIBLE
+        val stop = findViewById<Button>(R.id.arrete)
+        stop.visibility = View.VISIBLE
+        val connecte = findViewById<Button>(R.id.connection)
+        connecte.visibility = View.VISIBLE
+        val deconnect = findViewById<Button>(R.id.deconnection)
+        deconnect.visibility = View.VISIBLE
+
+    }
+
+    fun afficheLesBoutonsConnection() {
+        val connecte = findViewById<Button>(R.id.connection)
+        connecte.visibility = View.VISIBLE
+        val deconnect = findViewById<Button>(R.id.deconnection)
+        deconnect.visibility = View.VISIBLE
+
+    }
+
+    fun cacheLesBoutons() {
+        val droite = findViewById<Button>(R.id.droite)
+        droite.visibility = View.INVISIBLE
+        val gauche = findViewById<Button>(R.id.gauche)
+        gauche.visibility = View.INVISIBLE
+        val recu = findViewById<Button>(R.id.recule)
+        recu.visibility = View.INVISIBLE
+        val avanc = findViewById<Button>(R.id.avance)
+        avanc.visibility = View.INVISIBLE
+        val stop = findViewById<Button>(R.id.arrete)
+        stop.visibility = View.INVISIBLE
+        val connecte = findViewById<Button>(R.id.connection)
+        connecte.visibility = View.INVISIBLE
+        val deconnect = findViewById<Button>(R.id.deconnection)
+        deconnect.visibility = View.INVISIBLE
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-       if (resultCode != RESULT_OK) return
+        if (resultCode != RESULT_OK) return
 
-
-        var returnString = data?.getStringExtra("adresseIP")//on r&cupère ici la valeur de l'acivité fille
+        var returnString =
+            data?.getStringExtra("adresseIP")//on r&cupère ici la valeur de l'acivité fille
         println("on récupère l'adresse IP = " + returnString)
+        connectSSH.adresseIp = returnString.toString()
 
         returnString = data?.getStringExtra("nomUti")//on r&cupère ici la valeur de l'acivité fille
         println("on récupère le nom utilisateur = " + returnString)
+        connectSSH.utilisateur = returnString.toString()
 
-        returnString = data?.getStringExtra("motDePasse")//on r&cupère ici la valeur de l'acivité fille
+        returnString =
+            data?.getStringExtra("motDePasse")//on r&cupère ici la valeur de l'acivité fille
         println("on récupère motDePasse = " + returnString)
+        connectSSH.motdepasse = returnString.toString()
+        val droite = findViewById<Button>(R.id.droite)
 
-
-
+        afficheLesBoutonsConnection()//on affiche les boutons de connection une fois qu'on a configuré la connection
 
     }
-        companion object {
+
+    companion object {
         fun majIhm() {
 
         }
@@ -206,22 +273,31 @@ class MainActivity : AppCompatActivity() {
             private val loginRepository: ConnectionSSH, context: MainActivity
         ) : ViewModel() {
             private val activityReference: WeakReference<MainActivity> = WeakReference(context)
+            fun deconnecte() {
+                loginRepository.deconnecte()
+            }
+
             fun login(username: String, token: String) {
+                val activity = activityReference.get()
+
                 // Create a new coroutine to move the execution off the UI thread
                 viewModelScope.launch(Dispatchers.IO) {
                     val result = try {
                         loginRepository.initieConnection()
 
+
                     } catch (e: Exception) {
                         Result.Error(Exception("Network request failed"))
                     }
-                    val activity = activityReference.get()
-                    if (activity != null) {
+                     if (activity != null) {
                         //  activity.texte_cc.text = "coucou"
                         withContext(Dispatchers.Main) {
                             // if(result.)
-                            activity.afficheConnectionRéussie()
-                        }
+                            println(result.toString())
+                            activity.afficheTousLesBoutons()//on affiche tous les boutons une fois qu'on a établit la connection avec le robot
+
+                            //activity.afficheConnectionRéussie()
+                         }
                     }
                 }
             }
@@ -236,12 +312,9 @@ class MainActivity : AppCompatActivity() {
                     }
                     val activity = activityReference.get()
                     if (activity != null) {
-                        //  activity.texte_cc.text = "coucou"
                         withContext(Dispatchers.Main) {
                             println(result)
-                            //    if(result.() == com.telecommande_robot.Result) {
                             activity.afficheEnvoieRéussie()
-                            //   }
                         }
 
                     }

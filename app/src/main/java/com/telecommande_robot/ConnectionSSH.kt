@@ -18,6 +18,10 @@ class ConnectionSSH {
     lateinit var channel: Channel///= session.openChannel("exec")
     lateinit var session: Session
     var etatConnectionRobot = com.telecommande_robot.etatConnectionRobot.PasConnecte
+
+     public var adresseIp = "10.0.0.10"
+    public  var utilisateur = "choupinette"
+    public var motdepasse = "miaou"
     fun initieConnection(): Result.Success<String> {
        if( etatConnectionRobot == com.telecommande_robot.etatConnectionRobot.Connecté){
            deconnecte()
@@ -28,8 +32,8 @@ class ConnectionSSH {
         val config = Properties()
         config.put("StrictHostKeyChecking", "no")
         config.put("PreferredAuthentications", "publickey,keyboard-interactive,password")
-        session = jsch.getSession("nicolas", "10.0.0.12", 22)
-        session.setPassword("nicolas")
+        session = jsch.getSession(utilisateur, adresseIp, 22)
+        session.setPassword(motdepasse)
         session.setConfig(config)
         session.connect(3000)//connection avec un timeout de 3 secondes
         println("Connected")
@@ -62,8 +66,9 @@ class ConnectionSSH {
         }
         println("has runttourne")
         channel.disconnect()
-        //  session.disconnect()
-        return Result.Success("connecte")
+
+            if(session.isConnected)   return Result.Success("connecte")
+        else return Result.Success("pas connecte")
     }
 
     fun envoie(commande: String): Result.Success<String> {
@@ -101,7 +106,8 @@ class ConnectionSSH {
         channel.disconnect()
         session.disconnect()
 
-        return Result.Success("okok")
+        return Result.Success("deconnecte")
     }
+
 
 }

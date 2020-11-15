@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F44336"
+    android:background="@color/white"
     tools:context=".MainActivity">
 
     <LinearLayout
@@ -17,11 +17,22 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
             <Button
                 android:id="@+id/connection"
                 android:layout_width="211dp"
                 android:layout_height="wrap_content"
-                android:text="connection" />
+                android:text="connecte" />
+            <Button
+                android:id="@+id/deconnection"
+                android:layout_width="211dp"
+                android:layout_height="wrap_content"
+                android:text="deconnecte" />
+            </LinearLayout>
 
             <EditText
                 android:id="@+id/connectSSH"
@@ -113,25 +124,30 @@
                         android:layout_height="wrap_content"
                         android:text="arret" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
+
                     <Space
                         android:layout_width="146dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
-                <Button
-                    android:id="@+id/avance"
-                    android:layout_width="231dp"
-                    android:layout_height="wrap_content"
-                    android:text="avance" />
+
+                    <Button
+                        android:id="@+id/avance"
+                        android:layout_width="231dp"
+                        android:layout_height="wrap_content"
+                        android:text="avance" />
+
                     <Space
                         android:layout_width="146dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
 
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -142,6 +158,7 @@
                         android:layout_width="146dp"
                         android:layout_height="match_parent"
                         android:text="gauche" />
+
                     <Space
                         android:layout_width="146dp"
                         android:layout_height="wrap_content"
@@ -152,10 +169,12 @@
                         android:layout_width="146dp"
                         android:layout_height="match_parent"
                         android:text="stop" />
+
                     <Space
                         android:layout_width="146dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1" />
+
                     <Button
                         android:id="@+id/droite"
                         android:layout_width="146dp"
@@ -164,10 +183,12 @@
 
 
                 </LinearLayout>
+
                 <Space
                     android:layout_width="146dp"
                     android:layout_height="146dp"
                     android:layout_weight="1" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -177,15 +198,18 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="horizontal">
+
                         <Space
                             android:layout_width="146dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1" />
+
                         <Button
                             android:id="@+id/recule"
                             android:layout_width="228dp"
                             android:layout_height="wrap_content"
                             android:text="recule" />
+
                         <Space
                             android:layout_width="146dp"
                             android:layout_height="wrap_content"
