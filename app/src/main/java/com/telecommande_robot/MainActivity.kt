@@ -283,17 +283,20 @@ class MainActivity : AppCompatActivity() {
                 // Create a new coroutine to move the execution off the UI thread
                 viewModelScope.launch(Dispatchers.IO) {
                     val result = try {
+                        println("result.toString()")
+
                         loginRepository.initieConnection()
 
 
                     } catch (e: Exception) {
+                        println("Network request failed")
                         Result.Error(Exception("Network request failed"))
+                        return@launch
                     }
                      if (activity != null) {
-                        //  activity.texte_cc.text = "coucou"
-                        withContext(Dispatchers.Main) {
+                         withContext(Dispatchers.Main) {
                             // if(result.)
-                            println(result.toString())
+                            println("resulat= " + result.toString())
                             activity.afficheTousLesBoutons()//on affiche tous les boutons une fois qu'on a établit la connection avec le robot
 
                             //activity.afficheConnectionRéussie()
