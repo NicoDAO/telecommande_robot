@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this@MainActivity, "gauche.", Toast.LENGTH_SHORT).show()
             println("gauche.setOnClickListener")
             log_vac_coroutine.envoie(
-                "sh gauche.sh",
+                "sh avancegauche.sh",
                 "moi"
             )//on est sur la session ssh robot, on lance le script
 
@@ -111,7 +111,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this@MainActivity, "droite.", Toast.LENGTH_SHORT).show()
             println("droite.setOnClickListener")
             log_vac_coroutine.envoie(
-                "sh droite.sh",
+                "sh avancedroite.sh",
                 "moi"
             )//on est sur la session ssh robot, on lance le script
             droite.setBackgroundColor(Color.GRAY)
@@ -141,6 +141,18 @@ class MainActivity : AppCompatActivity() {
             recule.setBackgroundColor(Color.GRAY)
 
         }
+        val arrete = findViewById<Button>(R.id.arrete)
+        recule.setBackgroundColor(Color.RED)
+        recule.setOnClickListener {//quand on appuie sur le bouton recule, on arrive ici
+            Toast.makeText(this@MainActivity, "recule.", Toast.LENGTH_SHORT).show()
+            println("arret.setOnClickListener")
+            log_vac_coroutine.envoie(
+                "sh arret.sh ",
+                "moi"
+            )//on est sur la session ssh robot, on lance le script
+            recule.setBackgroundColor(Color.GRAY)
+
+        }
         val connection = findViewById<Button>(R.id.connection)
         connection.setOnClickListener {
             Toast.makeText(this@MainActivity, "connection.", Toast.LENGTH_SHORT).show()
@@ -156,6 +168,17 @@ class MainActivity : AppCompatActivity() {
             println("deconnection.setOnClickListener")
             log_vac_coroutine.deconnecte()
             deconnection.setBackgroundColor(Color.GRAY)
+
+        }
+        val demarre = findViewById<Button>(R.id.demarreRobot)
+        demarre.setOnClickListener {
+            Toast.makeText(this@MainActivity, "demarre.", Toast.LENGTH_SHORT).show()
+            println("demarre.setOnClickListener")
+            log_vac_coroutine.envoie(
+                "sh demarre_robot.sh ",
+                "moi"
+            )//on est sur la session ssh robot, on lance le script
+            demarre.setBackgroundColor(Color.GRAY)
 
         }
 
@@ -198,6 +221,8 @@ class MainActivity : AppCompatActivity() {
         connecte.visibility = View.VISIBLE
         val deconnect = findViewById<Button>(R.id.deconnection)
         deconnect.visibility = View.VISIBLE
+        val demarre = findViewById<Button>(R.id.demarreRobot)
+        demarre.visibility = View.VISIBLE
 
     }
 
@@ -224,7 +249,8 @@ class MainActivity : AppCompatActivity() {
         connecte.visibility = View.INVISIBLE
         val deconnect = findViewById<Button>(R.id.deconnection)
         deconnect.visibility = View.INVISIBLE
-
+        val demarre = findViewById<Button>(R.id.demarreRobot)
+        demarre.visibility = View.INVISIBLE
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
