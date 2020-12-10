@@ -15,7 +15,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.lang.ref.WeakReference
-import java.util.Arrays.toString
 
 
 sealed class Result<out R> {
@@ -66,7 +65,8 @@ class MainActivity : AppCompatActivity() {
         // println("envoieréusiie")
         if (texte_cc != null) {
             var reception= result.toString()
-            texte_cc.text = reception
+            texte_cc.append(reception);
+
             val gauche = findViewById<Button>(R.id.gauche)
             gauche.setBackgroundColor(Color.BLUE)
             val droite = findViewById<Button>(R.id.droite)
@@ -142,22 +142,22 @@ class MainActivity : AppCompatActivity() {
 
         }
         val arrete = findViewById<Button>(R.id.arrete)
-        recule.setBackgroundColor(Color.RED)
-        recule.setOnClickListener {//quand on appuie sur le bouton recule, on arrive ici
+        arrete.setBackgroundColor(Color.RED)
+        arrete.setOnClickListener {//quand on appuie sur le bouton recule, on arrive ici
             Toast.makeText(this@MainActivity, "recule.", Toast.LENGTH_SHORT).show()
             println("arret.setOnClickListener")
             log_vac_coroutine.envoie(
                 "sh arret.sh ",
                 "moi"
             )//on est sur la session ssh robot, on lance le script
-            recule.setBackgroundColor(Color.GRAY)
+            arrete.setBackgroundColor(Color.GRAY)
 
         }
         val connection = findViewById<Button>(R.id.connection)
         connection.setOnClickListener {
             Toast.makeText(this@MainActivity, "connection.", Toast.LENGTH_SHORT).show()
             println("connection.setOnClickListener")
-            log_vac_coroutine.login("coucou", "moi")
+            log_vac_coroutine.login("su", "moi")
             connection.setBackgroundColor(Color.GRAY)
 
         }
@@ -174,10 +174,15 @@ class MainActivity : AppCompatActivity() {
         demarre.setOnClickListener {
             Toast.makeText(this@MainActivity, "demarre.", Toast.LENGTH_SHORT).show()
             println("demarre.setOnClickListener")
-            log_vac_coroutine.envoie(
-                "sh demarre_robot.sh ",
+            log_vac_coroutine.envoieAvecMdp(
+                "su root /home/nicolas/demarre_robot.sh",
                 "moi"
             )//on est sur la session ssh robot, on lance le script
+
+         /*   log_vac_coroutine.envoieAvecMdp(
+                "sh demarre_robot.sh",
+                "moi"
+            )//on est sur la session ssh robot, on lance le script*/
             demarre.setBackgroundColor(Color.GRAY)
 
         }
@@ -250,7 +255,7 @@ class MainActivity : AppCompatActivity() {
         val deconnect = findViewById<Button>(R.id.deconnection)
         deconnect.visibility = View.INVISIBLE
         val demarre = findViewById<Button>(R.id.demarreRobot)
-        demarre.visibility = View.INVISIBLE
+       // demarre.visibility = View.INVISIBLE
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -326,9 +331,28 @@ class MainActivity : AppCompatActivity() {
                             println("resulat= " + result.toString())
                             activity.afficheTousLesBoutons()//on affiche tous les boutons une fois qu'on a établit la connection avec le robot
 
-                            //activity.afficheConnectionRéussie()
+                            // envoie("su ","")//on demarre le robot en mode root
+                           //  sleep(2000)
+                            // envoieAvecMdp("sudo sh /home/nicolas/demarre_robot.sh","")//on demarre le robot en mode root
+
+
+                             //activity.afficheConnectionRéussie()
                          }
                     }
+                }
+            }
+            fun envoieAvecMdp(commande: String, token: String) {
+                viewModelScope.launch(Dispatchers.IO) {
+
+                // Create a new coroutine to move the execution off the UI thread
+                val result = try {
+                     loginRepository.demarreRobotSSH()
+                   // loginRepository.initieConnection()
+                } catch (e: Exception) {
+
+                    Result.Error(Exception("ous ca a foiré "+ e.toString()))
+                }
+
                 }
             }
 
@@ -343,7 +367,7 @@ class MainActivity : AppCompatActivity() {
                     val activity = activityReference.get()
                     if (activity != null) {
                         withContext(Dispatchers.Main) {
-                            println( "on recoit " + result)
+                            println( "1 : on recoit " + result)
                             activity.afficheEnvoieRéussie(result)
                         }
 
