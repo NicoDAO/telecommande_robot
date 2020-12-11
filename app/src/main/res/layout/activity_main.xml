@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -15,6 +14,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/teal_200"
             android:orientation="vertical">
 
             <LinearLayout
@@ -22,16 +22,17 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/connection"
-                android:layout_width="211dp"
-                android:layout_height="wrap_content"
-                android:text="connecte" />
-            <Button
-                android:id="@+id/deconnection"
-                android:layout_width="211dp"
-                android:layout_height="wrap_content"
-                android:text="deconnecte" />
+                <Button
+                    android:id="@+id/connection"
+                    android:layout_width="211dp"
+                    android:layout_height="wrap_content"
+                    android:text="connecte" />
+
+                <Button
+                    android:id="@+id/deconnection"
+                    android:layout_width="211dp"
+                    android:layout_height="wrap_content"
+                    android:text="deconnecte" />
             </LinearLayout>
 
             <EditText
@@ -48,6 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="32dp"
                 android:text="configure" />
+
             <Button
                 android:id="@+id/demarreRobot"
                 android:layout_width="211dp"
@@ -216,8 +218,8 @@
                             android:id="@+id/recule"
                             android:layout_width="150dp"
                             android:layout_height="wrap_content"
-                            android:text="recule"
-                            android:layout_margin="1mm"/>
+                            android:layout_margin="1mm"
+                            android:text="recule" />
                         />
 
                         <Space
@@ -228,20 +230,22 @@
 
                 </LinearLayout>
 
-                <EditText
-                    android:id="@+id/editTextTextMultiLine"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:backgroundTint="@color/purple_200"
-                    android:ems="10"
-                    android:gravity="start|top"
-                    android:inputType="textMultiLine" />
+                    android:orientation="vertical">
 
+                    <EditText
+                        android:id="@+id/editTextTextMultiLine"
+                        android:layout_width="match_parent"
+                        android:layout_height="132dp"
+                        android:backgroundTint="@color/purple_200"
+                        android:ems="3"
+                        android:gravity="start|top"
+                        android:inputType="textMultiLine" />
 
-
+                </LinearLayout>
             </LinearLayout>
-
         </LinearLayout>
     </LinearLayout>
-
 </RelativeLayout>
