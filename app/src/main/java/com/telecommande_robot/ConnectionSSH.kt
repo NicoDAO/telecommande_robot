@@ -102,6 +102,38 @@ class ConnectionSSH {
         return Result.Success(formatted)
 
     }
+    /*
+    litTelemetrie, interroge le robot sur ses différentes télémetries issues des capteurs distances et gyroscope
+     */
+    fun litTelemetrie(commande: String): Result.Success<String> {
+
+        var i = 0
+        val config = Properties()
+        config.put("StrictHostKeyChecking", "no")
+        config.put("PreferredAuthentications", "publickey,keyboard-interactive,password")
+        println("Connected")
+        channel = session.openChannel("exec")
+        var `in`: InputStream1 = channel.inputStream
+        val out: OutputStream = channel.outputStream
+        (channel as ChannelExec).setErrStream(System.err)
+        (channel as ChannelExec).setCommand(commande)
+        channel.connect()
+        while (channel.isConnected) {
+            println("connect")
+            etatConnectionRobot == com.telecommande_robot.etatConnectionRobot.Connecté
+            //  Thread.sleep(100)
+        }
+        var formatted = ""
+        while (`in`.available() > 0) {
+
+            val lit = `in`.read().toByte()
+            formatted += (String.format("%c", lit))
+            Thread.sleep(10)
+        }
+        println("on recoit : " + formatted)
+        return Result.Success(formatted)
+
+    }
     fun demarreRobotSSH(): Result.Success<String> {
 
         var i = 0

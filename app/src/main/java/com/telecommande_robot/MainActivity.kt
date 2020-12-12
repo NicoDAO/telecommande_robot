@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.View
 import android.widget.Button
 import android.widget.TextView
@@ -28,7 +29,7 @@ class MainActivity : AppCompatActivity() {
     external fun stringFromJNI(): String
 
     val connectSSH = ConnectionSSH()
-
+    var counter = 0;
     val log_vac_coroutine = LoginViewModel(connectSSH, this)
     var etat_connection = etatConnectionRobot.PasConnecte
     fun afficheConnectionRéussie() {
@@ -89,6 +90,7 @@ class MainActivity : AppCompatActivity() {
         val activation = findViewById<Button>(R.id.configure)
         activation.setOnClickListener {
             Toast.makeText(this@MainActivity, "configure.", Toast.LENGTH_SHORT).show()
+
         }
 
         val gauche = findViewById<Button>(R.id.gauche)
@@ -160,6 +162,7 @@ class MainActivity : AppCompatActivity() {
             log_vac_coroutine.login("su", "moi")
             connection.setBackgroundColor(Color.GRAY)
 
+
         }
 
         val deconnection = findViewById<Button>(R.id.deconnection)
@@ -174,16 +177,12 @@ class MainActivity : AppCompatActivity() {
         demarre.setOnClickListener {
             Toast.makeText(this@MainActivity, "demarre.", Toast.LENGTH_SHORT).show()
             println("demarre.setOnClickListener")
-            log_vac_coroutine.envoieAvecMdp(
+            log_vac_coroutine.demarre_robot(
                 "su root /home/nicolas/demarre_robot.sh",
                 "moi"
             )//on est sur la session ssh robot, on lance le script
 
-         /*   log_vac_coroutine.envoieAvecMdp(
-                "sh demarre_robot.sh",
-                "moi"
-            )//on est sur la session ssh robot, on lance le script*/
-            demarre.setBackgroundColor(Color.GRAY)
+           demarre.setBackgroundColor(Color.GRAY)
 
         }
 
@@ -209,8 +208,31 @@ class MainActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.puissancemoteur).text = stringFromJNI()
         val texte_cc = findViewById<TextView>(R.id.connectSSH)
         cacheLesBoutons()//on cache les boutons du robot tant qu'on a pas établit la connection
-    }
+        var counter = 0
 
+
+
+    }
+    fun sequenceur_robot() {
+        val texte_cc = findViewById<TextView>(R.id.editTextTextMultiLine)
+
+      //  val countTime: TextView = findViewById(R.id.arrete)
+        object : CountDownTimer(1000000, 1000) {
+            override fun onTick(millisUntilFinished: Long) {
+                log_vac_coroutine.envoie(
+                    "sh lit_telemetrie.sh",
+                    "moi"
+                )//o
+                texte_cc.append( counter.toString())
+                // countTime.text = "tt"
+                counter++
+             }
+            override fun onFinish() {
+                texte_cc.append("fini")
+
+            }
+        }.start()
+    }
     fun afficheTousLesBoutons() {
         val droite = findViewById<Button>(R.id.droite)
         droite.visibility = View.VISIBLE
@@ -330,18 +352,13 @@ class MainActivity : AppCompatActivity() {
                             // if(result.)
                             println("resulat= " + result.toString())
                             activity.afficheTousLesBoutons()//on affiche tous les boutons une fois qu'on a établit la connection avec le robot
+                             activity.sequenceur_robot();
 
-                            // envoie("su ","")//on demarre le robot en mode root
-                           //  sleep(2000)
-                            // envoieAvecMdp("sudo sh /home/nicolas/demarre_robot.sh","")//on demarre le robot en mode root
-
-
-                             //activity.afficheConnectionRéussie()
-                         }
+                     }
                     }
                 }
             }
-            fun envoieAvecMdp(commande: String, token: String) {
+            fun demarre_robot(commande: String, token: String) {
                 viewModelScope.launch(Dispatchers.IO) {
 
                 // Create a new coroutine to move the execution off the UI thread
@@ -374,9 +391,6 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
-
         }
-
-
     }
 }
