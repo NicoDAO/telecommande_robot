@@ -1,5 +1,6 @@
 package com.telecommande_robot
 
+import Client
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -114,7 +115,7 @@ class MainActivity : AppCompatActivity() {
             println("droite.setOnClickListener")
             log_vac_coroutine.envoie(
                 "sh avancedroite.sh",
-                "moi"
+                "mœoi"
             )//on est sur la session ssh robot, on lance le script
             droite.setBackgroundColor(Color.GRAY)
 
@@ -157,6 +158,13 @@ class MainActivity : AppCompatActivity() {
         }
         val connection = findViewById<Button>(R.id.connection)
         connection.setOnClickListener {
+
+
+
+
+
+
+
             Toast.makeText(this@MainActivity, "connection.", Toast.LENGTH_SHORT).show()
             println("connection.setOnClickListener")
             log_vac_coroutine.login("su", "moi")
@@ -178,7 +186,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this@MainActivity, "demarre.", Toast.LENGTH_SHORT).show()
             println("demarre.setOnClickListener")
             log_vac_coroutine.demarre_robot(
-                "su root /home/nicolas/demarre_robot.sh",
+                "su root /home/robot/lerobot/projRb/demarre_robot.sh",
                 "moi"
             )//on est sur la session ssh robot, on lance le script
 
@@ -215,14 +223,17 @@ class MainActivity : AppCompatActivity() {
     }
     fun sequenceur_robot() {
         val texte_cc = findViewById<TextView>(R.id.editTextTextMultiLine)
-
+        log_vac_coroutine.envoie(
+            "sh lit_telemetrie.sh",
+            "moi"
+        )
       //  val countTime: TextView = findViewById(R.id.arrete)
-        object : CountDownTimer(1000000, 1000) {
+      /*  object : CountDownTimer(1000000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
-                log_vac_coroutine.envoie(
+               log_vac_coroutine.envoie(
                     "sh lit_telemetrie.sh",
                     "moi"
-                )//o
+                )
                 texte_cc.append( counter.toString())
                 // countTime.text = "tt"
                 counter++
@@ -231,7 +242,7 @@ class MainActivity : AppCompatActivity() {
                 texte_cc.append("fini")
 
             }
-        }.start()
+        }.start()*/
     }
     fun afficheTousLesBoutons() {
         val droite = findViewById<Button>(R.id.droite)
@@ -383,7 +394,7 @@ class MainActivity : AppCompatActivity() {
                     }
                     val activity = activityReference.get()
                     if (activity != null) {
-                        withContext(Dispatchers.Main) {
+                       withContext(Dispatchers.Main) {
                             println( "1 : on recoit " + result)
                             activity.afficheEnvoieRéussie(result)
                         }

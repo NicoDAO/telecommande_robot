@@ -1,5 +1,6 @@
 package com.telecommande_robot
 
+import Client
 import com.jcraft.jsch.Channel
 import com.jcraft.jsch.ChannelExec
 import com.jcraft.jsch.JSch
@@ -9,7 +10,7 @@ import java.util.*
 import java.io.InputStream as InputStream1
 
 enum class etatConnectionRobot {
-    pasdemarré,demarré,PasConnecte, ConnectionEnCours, Connecté, ConnectionMorte
+    pasdemarré, demarré, PasConnecte, ConnectionEnCours, Connecté, ConnectionMorte
 }
 
 class ConnectionSSH {
@@ -22,7 +23,7 @@ class ConnectionSSH {
     public var adresseIp = "10.0.0.10"
     public var utilisateur = "choupinette"
     public var motdepasse = "miaou"
-
+    lateinit var client : Client;
 
     fun initieConnection(): Result.Success<String> {
         if (etatConnectionRobot == com.telecommande_robot.etatConnectionRobot.Connecté) {
@@ -43,7 +44,7 @@ class ConnectionSSH {
         var `in`: InputStream1 = channel.inputStream
         val out: OutputStream = channel.outputStream
         (channel as ChannelExec).setErrStream(System.err)
-        (channel as ChannelExec).setCommand("ls")
+        (channel as ChannelExec).setCommand("ls demarre*")
         channel.connect()
         while (channel.isConnected) {
             println("connecté")
@@ -57,7 +58,7 @@ class ConnectionSSH {
             val lit = `in`.read().toByte()
             formatted += String.format("%c", lit)
             println("on lit : " + formatted)
-            Thread.sleep(10)
+            Thread.sleep(100)
         }
         if (channel.isClosed) {
             println("exit-status: " + channel.exitStatus)
@@ -75,38 +76,53 @@ class ConnectionSSH {
 
     fun envoie(commande: String): Result.Success<String> {
 
+        client.write(commande)
+        Result.Success("formatted")
+        return  Result.Success("formatted");
+/*
         var i = 0
         val config = Properties()
         config.put("StrictHostKeyChecking", "no")
         config.put("PreferredAuthentications", "publickey,keyboard-interactive,password")
-        println("Connected")
+        println("on envoie la commande : " + commande)
         channel = session.openChannel("exec")
         var `in`: InputStream1 = channel.inputStream
         val out: OutputStream = channel.outputStream
+        var formatted = ""
         (channel as ChannelExec).setErrStream(System.err)
         (channel as ChannelExec).setCommand(commande)
         channel.connect()
         while (channel.isConnected) {
-            println("connect")
+            println("connecté,")
             etatConnectionRobot == com.telecommande_robot.etatConnectionRobot.Connecté
             //  Thread.sleep(100)
-        }
-        var formatted = ""
-        while (`in`.available() > 0) {
 
-            val lit = `in`.read().toByte()
-            formatted += (String.format("%c", lit))
-            //Thread.sleep(10)
+
+            //on laisse la session ouverte
+
+            while (`in`.available() > 0) {
+
+                val lit = `in`.read().toByte()
+                formatted += (String.format("%c", lit))
+                //Thread.sleep(10)
+            }
+            println("!on recoit : " + formatted)
+
         }
-        println("on recoit : " + formatted)
+
+
         return Result.Success(formatted)
-
+*/
     }
+
     /*
     litTelemetrie, interroge le robot sur ses différentes télémetries issues des capteurs distances et gyroscope
      */
     fun litTelemetrie(commande: String): Result.Success<String> {
-
+        //JschExecutor =
+        /*var tunnel = JschExecutor()
+        tunnel.go()
+        return Result.Success("super")*/
         var i = 0
         val config = Properties()
         config.put("StrictHostKeyChecking", "no")
@@ -118,6 +134,11 @@ class ConnectionSSH {
         (channel as ChannelExec).setErrStream(System.err)
         (channel as ChannelExec).setCommand(commande)
         channel.connect()
+
+
+
+
+
         while (channel.isConnected) {
             println("connect")
             etatConnectionRobot == com.telecommande_robot.etatConnectionRobot.Connecté
@@ -134,6 +155,7 @@ class ConnectionSSH {
         return Result.Success(formatted)
 
     }
+
     fun demarreRobotSSH(): Result.Success<String> {
 
         var i = 0
@@ -144,62 +166,58 @@ class ConnectionSSH {
         session.setPassword(motdepasse)
         session.setConfig(config)
         session.connect(3000)//connection avec un timeout de 3 secondes
-        println("ah Connected")
-        val channel = session.openChannel("exec")
 
-        var `in`: InputStream1 = channel.inputStream
-        val out: OutputStream = channel.outputStream
-        (channel as ChannelExec).setErrStream(System.err)
-        (channel as ChannelExec).setCommand("sudo -S -p  sh demarre_robot.sh");//on demarre le robot, et on rentre le mot de passe
-        val value  = channel.getOutputStream ();
-        channel.connect()
+        //test
 
-        out.write((motdepasse+"\n").toByteArray());
-        out.flush();
-         if (channel.isConnected) {
-            println("connecté")
-            etatConnectionRobot = com.telecommande_robot.etatConnectionRobot.demarré
-            Thread.sleep(100)
-        }
-        var formatted = ""
 
-        while (`in`.available() > 0) {
+//on créé un client tcp et on redirige vers un tunnel ssh
+        val address = adresseIp
+        val port = 7777
 
-            val lit = `in`.read().toByte()
-            formatted += String.format("%c", lit)
-            println("on lit : " + formatted)
+         client = Client(address, port)
+
+        //test, on redirige les requetes venant sur le port 8181 vers  le port 80
+        //   session.setPortForwardingL(8080, "http://10.0.0.14", 8080)
+        client.run()
+
+        // fin test
+        if (false) {
+
+            println("ah Connected")
+            val channel = session.openChannel("exec")
+
+            val out: OutputStream = channel.outputStream
+            (channel as ChannelExec).setErrStream(System.err)
+            (channel as ChannelExec).setCommand("sudo -S -p  sh demarre_robot.sh");//on demarre le robot, et on rentre le mot de passe
+            val value = channel.getOutputStream();
+            channel.connect()
+
+            out.write((motdepasse + "\n").toByteArray());
+            out.flush();
+            if (channel.isConnected) {
+                println("connecté")
+                etatConnectionRobot = com.telecommande_robot.etatConnectionRobot.demarré
+                Thread.sleep(100)
+            }
+
+            while (false) {
+                var formatted = ""
+                var `in`: InputStream1 = channel.inputStream
+
+                while (`in`.available() != -1) {
+
+                    val lit = `in`.read().toByte()
+                    formatted += String.format("%c", lit)
+                    println("on lit : " + formatted)
+                    // Thread.sleep(10)
+                }
+            }
+
             Thread.sleep(10)
-        }
-        while(channel.isClosed) {
-            println("exit-status: " + channel.exitStatus)
-        }
-        try {
-            Thread.sleep(1000)
-        } catch (ee: Exception) {
-        }
 
 
-        (channel as ChannelExec).setCommand("sh demarre_robot.sh")
-        channel.connect()
-        if (channel.isConnected) {
-            println("on demarre le robot")
-            etatConnectionRobot = com.telecommande_robot.etatConnectionRobot.demarré
-            Thread.sleep(100)
         }
-        while (`in`.available() > 0) {
 
-            val lit = `in`.read().toByte()
-            formatted += String.format("%c", lit)
-            println("on lit : " + formatted)
-            Thread.sleep(10)
-        }
-        if (channel.isClosed) {
-            println("exit-status: " + channel.exitStatus)
-        }
-        try {
-            Thread.sleep(1000)
-        } catch (ee: Exception) {
-        }
 
         channel.disconnect()
         session.disconnect()

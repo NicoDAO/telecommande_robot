@@ -92,8 +92,5 @@ class Boite_configuration : AppCompatActivity() {
             setResult(RESULT_OK, returnIntent)
             finish()//on ferme l'activité et on retourne dans le programme principal
         }
-
     }
-
-
 }
