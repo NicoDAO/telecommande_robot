@@ -160,11 +160,6 @@ class MainActivity : AppCompatActivity() {
         connection.setOnClickListener {
 
 
-
-
-
-
-
             Toast.makeText(this@MainActivity, "connection.", Toast.LENGTH_SHORT).show()
             println("connection.setOnClickListener")
             log_vac_coroutine.login("su", "moi")
@@ -223,15 +218,15 @@ class MainActivity : AppCompatActivity() {
     }
     fun sequenceur_robot() {
         val texte_cc = findViewById<TextView>(R.id.editTextTextMultiLine)
-        log_vac_coroutine.envoie(
+     /*   log_vac_coroutine.envoie(
             "sh lit_telemetrie.sh",
             "moi"
-        )
+        )*/
       //  val countTime: TextView = findViewById(R.id.arrete)
-      /*  object : CountDownTimer(1000000, 1000) {
+       object : CountDownTimer(1000000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                log_vac_coroutine.envoie(
-                    "sh lit_telemetrie.sh",
+                    "lit_telemetrie",
                     "moi"
                 )
                 texte_cc.append( counter.toString())
@@ -242,7 +237,7 @@ class MainActivity : AppCompatActivity() {
                 texte_cc.append("fini")
 
             }
-        }.start()*/
+        }.start()
     }
     fun afficheTousLesBoutons() {
         val droite = findViewById<Button>(R.id.droite)
