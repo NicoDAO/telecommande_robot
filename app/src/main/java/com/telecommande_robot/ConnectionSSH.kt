@@ -20,10 +20,10 @@ class ConnectionSSH {
     lateinit var session: Session
     var etatConnectionRobot = com.telecommande_robot.etatConnectionRobot.PasConnecte
 
-    public var adresseIp = "10.0.0.10"
-    public var utilisateur = "choupinette"
-    public var motdepasse = "miaou"
-    lateinit var client : Client;
+    var adresseIp = "10.0.0.10"
+    var utilisateur = "choupinette"
+    var motdepasse = "miaou"
+    lateinit var client : Client
 
     fun initieConnection(): Result.Success<String> {
         if (etatConnectionRobot == com.telecommande_robot.etatConnectionRobot.Connecté) {
@@ -78,7 +78,7 @@ class ConnectionSSH {
 
         client.write(commande)
         Result.Success("formatted")
-        return  Result.Success("formatted");
+        return  Result.Success("formatted")
 /*
         var i = 0
         val config = Properties()
@@ -188,12 +188,12 @@ class ConnectionSSH {
 
             val out: OutputStream = channel.outputStream
             (channel as ChannelExec).setErrStream(System.err)
-            (channel as ChannelExec).setCommand("sudo -S -p  sh demarre_robot.sh");//on demarre le robot, et on rentre le mot de passe
-            val value = channel.getOutputStream();
+            channel.setCommand("sudo -S -p  sh demarre_robot.sh")//on demarre le robot, et on rentre le mot de passe
+            val value = channel.getOutputStream()
             channel.connect()
 
-            out.write((motdepasse + "\n").toByteArray());
-            out.flush();
+            out.write((motdepasse + "\n").toByteArray())
+            out.flush()
             if (channel.isConnected) {
                 println("connecté")
                 etatConnectionRobot = com.telecommande_robot.etatConnectionRobot.demarré

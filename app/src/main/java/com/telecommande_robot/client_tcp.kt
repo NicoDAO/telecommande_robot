@@ -43,11 +43,11 @@ class Client(address: String, port: Int) {
 
     }
 
-    public fun write(message: String) {
+    fun write(message: String) {
         writer.write((message + '\n').toByteArray(Charset.defaultCharset()))
     }
 
-    public fun read() {
+    fun read() {
         while (connected)
             println(reader.nextLine())
     }

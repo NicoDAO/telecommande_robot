@@ -1,6 +1,5 @@
 package com.telecommande_robot
 
-import Client
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -30,7 +29,7 @@ class MainActivity : AppCompatActivity() {
     external fun stringFromJNI(): String
 
     val connectSSH = ConnectionSSH()
-    var counter = 0;
+    var counter = 0
     val log_vac_coroutine = LoginViewModel(connectSSH, this)
     var etat_connection = etatConnectionRobot.PasConnecte
     fun afficheConnectionRéussie() {
@@ -66,8 +65,8 @@ class MainActivity : AppCompatActivity() {
 
         // println("envoieréusiie")
         if (texte_cc != null) {
-            var reception= result.toString()
-            texte_cc.append(reception);
+            var reception = result.toString()
+            texte_cc.append(reception)
 
             val gauche = findViewById<Button>(R.id.gauche)
             gauche.setBackgroundColor(Color.BLUE)
@@ -185,7 +184,7 @@ class MainActivity : AppCompatActivity() {
                 "moi"
             )//on est sur la session ssh robot, on lance le script
 
-           demarre.setBackgroundColor(Color.GRAY)
+            demarre.setBackgroundColor(Color.GRAY)
 
         }
 
@@ -214,31 +213,33 @@ class MainActivity : AppCompatActivity() {
         var counter = 0
 
 
-
     }
+
     fun sequenceur_robot() {
         val texte_cc = findViewById<TextView>(R.id.editTextTextMultiLine)
-     /*   log_vac_coroutine.envoie(
-            "sh lit_telemetrie.sh",
-            "moi"
-        )*/
-      //  val countTime: TextView = findViewById(R.id.arrete)
-       object : CountDownTimer(1000000, 1000) {
+        /*   log_vac_coroutine.envoie(
+               "sh lit_telemetrie.sh",
+               "moi"
+           )*/
+        //  val countTime: TextView = findViewById(R.id.arrete)
+        object : CountDownTimer(1000000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
-               log_vac_coroutine.envoie(
+                log_vac_coroutine.envoie(
                     "lit_telemetrie",
                     "moi"
                 )
-                texte_cc.append( counter.toString())
+                texte_cc.append(counter.toString())
                 // countTime.text = "tt"
                 counter++
-             }
+            }
+
             override fun onFinish() {
                 texte_cc.append("fini")
 
             }
         }.start()
     }
+
     fun afficheTousLesBoutons() {
         val droite = findViewById<Button>(R.id.droite)
         droite.visibility = View.VISIBLE
@@ -283,7 +284,7 @@ class MainActivity : AppCompatActivity() {
         val deconnect = findViewById<Button>(R.id.deconnection)
         deconnect.visibility = View.INVISIBLE
         val demarre = findViewById<Button>(R.id.demarreRobot)
-       // demarre.visibility = View.INVISIBLE
+        // demarre.visibility = View.INVISIBLE
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -353,28 +354,29 @@ class MainActivity : AppCompatActivity() {
                         Result.Error(Exception("Network request failed"))
                         return@launch
                     }
-                     if (activity != null) {
-                         withContext(Dispatchers.Main) {
+                    if (activity != null) {
+                        withContext(Dispatchers.Main) {
                             // if(result.)
                             println("resulat= " + result.toString())
                             activity.afficheTousLesBoutons()//on affiche tous les boutons une fois qu'on a établit la connection avec le robot
-                             activity.sequenceur_robot();
+                            activity.sequenceur_robot()
 
-                     }
+                        }
                     }
                 }
             }
+
             fun demarre_robot(commande: String, token: String) {
                 viewModelScope.launch(Dispatchers.IO) {
 
-                // Create a new coroutine to move the execution off the UI thread
-                val result = try {
-                     loginRepository.demarreRobotSSH()
-                   // loginRepository.initieConnection()
-                } catch (e: Exception) {
+                    // Create a new coroutine to move the execution off the UI thread
+                    val result = try {
+                        loginRepository.demarreRobotSSH()
+                        // loginRepository.initieConnection()
+                    } catch (e: Exception) {
 
-                    Result.Error(Exception("ous ca a foiré "+ e.toString()))
-                }
+                        Result.Error(Exception("ous ca a foiré " + e.toString()))
+                    }
 
                 }
             }
@@ -389,11 +391,10 @@ class MainActivity : AppCompatActivity() {
                     }
                     val activity = activityReference.get()
                     if (activity != null) {
-                       withContext(Dispatchers.Main) {
-                            println( "1 : on recoit " + result)
+                        withContext(Dispatchers.Main) {
+                            println("1 : on recoit " + result)
                             activity.afficheEnvoieRéussie(result)
                         }
-
                     }
                 }
             }
